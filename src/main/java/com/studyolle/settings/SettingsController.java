@@ -4,6 +4,7 @@ import com.studyolle.account.AccountService;
 import com.studyolle.account.CurrentUser;
 import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,25 +20,24 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 public class SettingsController {
+    static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
+    static final String SETTINGS_PROFILE_URL = "/settings/profile";
+    static final String SETTINGS_PASSWORD_VIEW_NAME = "settings/password";
+    static final String SETTINGS_PASSWORD_URL = "/settings/password";
+    static final String SETTINGS_NOTIFICATION_VIEW_NAME = "settings/notifications";
+    static final String SETTINGS_NOTIFICATION_URL = "/settings/notifications";
+    private final AccountService accountService;
+    private final ModelMapper modelMapper;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(new PasswordFormValidator());
     }
 
-    static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
-    static final String SETTINGS_PROFILE_URL = "/settings/profile";
-
-    static final String SETTINGS_PASSWORD_VIEW_NAME = "settings/password";
-    static final String SETTINGS_PASSWORD_URL = "/settings/password";
-    static final String SETTINGS_NOTIFICATION_VIEW_NAME = "settings/notifications";
-    static final String SETTINGS_NOTIFICATION_URL = "/settings/notifications";
-    private final AccountService accountService;
-
     @GetMapping(SETTINGS_PROFILE_URL)
     public String updateProfileForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
-        model.addAttribute(new Profile(account));
+        model.addAttribute(modelMapper.map(account, Profile.class));
         return SETTINGS_PROFILE_VIEW_NAME;
     }
 
@@ -61,8 +61,7 @@ public class SettingsController {
     }
 
     @PostMapping(SETTINGS_PASSWORD_URL)
-    public String updatePassword(@CurrentUser Account account, @Valid PasswordForm passwordForm, Errors errors,
-                                 Model model, RedirectAttributes attributes) {
+    public String updatePassword(@CurrentUser Account account, @Valid PasswordForm passwordForm, Errors errors, Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PASSWORD_VIEW_NAME;
@@ -75,13 +74,12 @@ public class SettingsController {
     @GetMapping(SETTINGS_NOTIFICATION_URL)
     public String updateNotificationFrom(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
-        model.addAttribute(new Notifications(account));
+        model.addAttribute(modelMapper.map(account, Notifications.class));
         return SETTINGS_NOTIFICATION_VIEW_NAME;
     }
 
     @PostMapping(SETTINGS_NOTIFICATION_URL)
-    public String updateNotification(@CurrentUser Account account, @Valid Notifications notifications, Errors errors,
-                                     Model model, RedirectAttributes attributes) {
+    public String updateNotification(@CurrentUser Account account, @Valid Notifications notifications, Errors errors, Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_NOTIFICATION_VIEW_NAME;
