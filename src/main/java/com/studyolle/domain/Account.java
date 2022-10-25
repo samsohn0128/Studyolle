@@ -47,15 +47,15 @@ public class Account {
 
     private boolean studyCreatedByEmail;
 
-    private boolean studyCreatedByWeb;
+    private boolean studyCreatedByWeb = true;
 
-    private boolean studyEnrollmentByEmail;
+    private boolean studyEnrollmentResultByEmail;
 
-    private boolean studyEnrollmentByWeb;
+    private boolean studyEnrollmentResultByWeb = true;
 
     private boolean studyUpdatedByEmail;
 
-    private boolean studyUpdatedByWeb;
+    private boolean studyUpdatedByWeb = true;
     private LocalDateTime emailCheckTokenGeneratedAt;
 
     public void generateEmailCheckToken() {

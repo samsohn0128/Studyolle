@@ -22,11 +22,10 @@ public class SecurityConfig {
     private final DataSource dataSource;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests((authz) -> authz
                 .mvcMatchers("/", "/login", "/sign-up", "/check-email-token", "/email-login",
                         "/check-email-login", "/login-link").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/api/test/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile").permitAll()
                 .anyRequest().authenticated()
         );
