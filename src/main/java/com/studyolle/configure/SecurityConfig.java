@@ -23,12 +23,18 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests((authz) -> authz
+        http
+                .authorizeRequests()
                 .mvcMatchers("/", "/login", "/sign-up", "/check-email-token", "/email-login",
-                        "/check-email-login", "/login-link").permitAll()
-                .mvcMatchers(HttpMethod.GET, "/profile").permitAll()
+                        "/check-email-login", "/login-link", "/login-by-email").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
-        );
+                .and()
+                .headers()
+                .frameOptions().sameOrigin()
+                .and()
+                .csrf().ignoringAntMatchers("/h2-console/**");
 
         http.formLogin()
                 .loginPage("/login").permitAll();
