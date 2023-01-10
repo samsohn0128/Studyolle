@@ -1,5 +1,7 @@
 node_modules/
 .idea/
+application.yml
+application-dev.yml
 out/
 .idea_modules/
 
