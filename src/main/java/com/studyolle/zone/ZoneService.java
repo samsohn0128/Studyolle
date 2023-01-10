@@ -34,6 +34,7 @@ public class ZoneService {
                                 .build();
                     })
                     .collect(Collectors.toList());
+            zoneList.forEach(System.out::println);
             zoneRepository.saveAll(zoneList);
         }
     }

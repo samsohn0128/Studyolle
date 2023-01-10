@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(of = "id")
 @Builder
 @NoArgsConstructor

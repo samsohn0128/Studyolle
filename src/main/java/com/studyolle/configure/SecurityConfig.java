@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -24,27 +25,22 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .mvcMatchers("/", "/login", "/sign-up", "/check-email-token", "/email-login",
-                        "/check-email-login", "/login-link", "/login-by-email").permitAll()
-                .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .headers()
-                .frameOptions().sameOrigin()
-                .and()
-                .csrf().ignoringAntMatchers("/h2-console/**");
-
-        http.formLogin()
-                .loginPage("/login").permitAll();
-
-        http.logout()
-                .logoutSuccessUrl("/");
-
-        http.rememberMe()
-                .userDetailsService(accountService)
-                .tokenRepository(tokenRepository());
+                .csrf(csrfConfig -> csrfConfig
+                        .ignoringAntMatchers("/h2-console/**"))
+                .authorizeRequests(urlRegistry -> urlRegistry
+                        .mvcMatchers("/", "/login", "/sign-up", "/check-email-token", "/email-login",
+                                "/check-email-login", "/login-link", "/login-by-email").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
+                        .antMatchers("/h2-console/**").permitAll()
+                        .anyRequest().authenticated())
+                .headers(headersConfig -> headersConfig
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .formLogin(formLoginConfig -> formLoginConfig.loginPage("/login")
+                        .permitAll())
+                .logout(logoutConfig -> logoutConfig.logoutSuccessUrl("/"))
+                .rememberMe(rememberMeConfig -> rememberMeConfig
+                        .userDetailsService(accountService)
+                        .tokenRepository(tokenRepository()));
         return http.build();
     }
 

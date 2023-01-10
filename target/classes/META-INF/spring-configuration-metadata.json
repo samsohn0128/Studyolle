@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "com.studyolle.configure.AppProperties",
+      "sourceType": "com.studyolle.configure.AppProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.host",
+      "type": "java.lang.String",
+      "sourceType": "com.studyolle.configure.AppProperties"
+    }
+  ],
+  "hints": []
+}
